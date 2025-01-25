@@ -1,12 +1,27 @@
 #pragma once
+#include <include/gpu/ganesh/gl/GrGLInterface.h>
+#include <include/gpu/ganesh/GrDirectContext.h>
+#include "Context.h"
 
-class OpenGL
+class WinBase;
+class OpenGL:public Context
 {
 public:
-	OpenGL();
+	OpenGL(WinBase* win);
 	~OpenGL();
-
+	void resize() override;
+	sk_sp<SkSurface> getSurface() override;
+	void paint() override;
 private:
-
+	void init();
+	void destroyContext();
+private:
+	HGLRC fHGLRC{nullptr};
+	int fStencilBits = 0;
+	int fSampleCount = 6;
+	sk_sp<const GrGLInterface> fBackendContext;
+	sk_sp<GrDirectContext> fContext;
+	GrContextOptions fGrContextOptions;
+	SkSurfaceProps fSurfaceProps;
 };
 

@@ -1,8 +1,8 @@
 #include "WinBase.h"
-#include "gl/WindowContext.h"
-#include "gl/WindowContextFactory_win.h"
+//#include "gl/WindowContext.h"
+//#include "gl/WindowContextFactory_win.h"
 
-std::unique_ptr<skwindow::WindowContext> fWindowContext;
+//std::unique_ptr<skwindow::WindowContext> fWindowContext;
 WinBase::WinBase()
 {
 }
@@ -42,7 +42,8 @@ void WinBase::createWindow()
     hwnd = CreateWindowEx(NULL, clsName, clsName, WS_OVERLAPPEDWINDOW,
         x, y, w, h, nullptr, nullptr, hinstance, nullptr);
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-    fWindowContext = skwindow::MakeGLForWin(hwnd);
+    //fWindowContext = skwindow::MakeGLForWin(hwnd);
+    ctx = Context::create(this);
 }
 
 LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -54,17 +55,19 @@ LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         BeginPaint(hWnd, &ps);
 
-        auto surface = fWindowContext->getBackbufferSurface();
+        //auto surface = fWindowContext->getBackbufferSurface();
+        auto surface = win->ctx->getSurface();
         SkRect rect = SkRect::MakeXYWH(win->w - 200, win->h - 200, 180, 180);
         auto canvas = surface->getCanvas();
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setColor(0xff00ffff);
         canvas->drawOval(rect, paint);
-        if (auto dContext = fWindowContext->directContext()) {
-            dContext->flushAndSubmit(surface.get());
-        }
-        fWindowContext->swapBuffers();
+        //if (auto dContext = fWindowContext->directContext()) {
+        //    dContext->flushAndSubmit(surface.get());
+        //}
+        //fWindowContext->swapBuffers();
+        win->ctx->paint();
 
         EndPaint(hWnd, &ps);
         return 0;
@@ -76,13 +79,8 @@ LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE: {
         win->w = LOWORD(lParam);
         win->h = HIWORD(lParam);
-        //auto surface = win->getSurface();
-        //win->paint(surface->getCanvas());
-        //win->flush();
-        //UpdateWindow(hWnd);
-        //debounce([]() {
-        //        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nullptr, SPIF_UPDATEINIFILE);
-        //    }, std::chrono::milliseconds(500));
+        //fWindowContext->resize(win->w, win->h);
+        win->ctx->resize();
         return 0;
     }
     case WM_DESTROY:

@@ -24,19 +24,4 @@ void WindowContext::swapBuffers() {
     this->onSwapBuffers();
 }
 
-#if defined(SK_GRAPHITE)
-void WindowContext::snapRecordingAndSubmit() {
-    if (fGraphiteContext) {
-        SkASSERT(fGraphiteRecorder);
-        std::unique_ptr<skgpu::graphite::Recording> recording = fGraphiteRecorder->snap();
-        if (recording) {
-            skgpu::graphite::InsertRecordingInfo info;
-            info.fRecording = recording.get();
-            fGraphiteContext->insertRecording(info);
-            fGraphiteContext->submit(skgpu::graphite::SyncToCpu::kNo);
-        }
-    }
-}
-#endif
-
 }  // namespace skwindow

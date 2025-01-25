@@ -6,6 +6,8 @@
 #include <include/core/SkCanvas.h>
 #include <include/gpu/ganesh/GrDirectContext.h>
 
+#include "backends/Context.h"
+
 class WinBase
 {
 public:
@@ -19,4 +21,5 @@ protected:
 	void createWindow();
 private:
 	static LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	std::unique_ptr<Context> ctx;
 };

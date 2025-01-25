@@ -8,13 +8,16 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 link_directories("D:\\sdk\\skia\\out")
 include_directories("D:\\sdk\\skia")
 add_executable(${PROJECT_NAME})
-add_subdirectory(gl)
+
 target_sources(${PROJECT_NAME} PRIVATE 
 	"main.cpp" 
 	  "WindowMain.h" "WindowMain.cpp" 
       "WinBase.h" "WinBase.cpp" 
-      "backends/OpenGL.h" "backends/OpenGL.cpp"
- "backends/Raster.h" "backends/Raster.cpp")
+ "backends/OpenGL.h" "backends/OpenGL.cpp"
+ "backends/Raster.h" "backends/Raster.cpp" 
+ "backends/Context.h" "backends/Context.cpp"
+ "backends/SkWGL.h" "backends/SkWGL.cpp"
+)
 
 if(WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")

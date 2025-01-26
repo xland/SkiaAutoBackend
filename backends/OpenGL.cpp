@@ -3,10 +3,11 @@
 #include <include/gpu/ganesh/gl/GrGLAssembleHelpers.h>
 #include <include/gpu/ganesh/gl/GrGLAssembleInterface.h>
 
-#include "include/gpu/ganesh/GrBackendSurface.h"
-#include "include/gpu/ganesh/GrDirectContext.h"
-#include "include/gpu/ganesh/SkSurfaceGanesh.h"
-#include "include/gpu/ganesh/gl/GrGLBackendSurface.h"
+#include <include/gpu/ganesh/SkImageGanesh.h>
+#include <include/gpu/ganesh/GrBackendSurface.h>
+#include <include/gpu/ganesh/GrDirectContext.h>
+#include <include/gpu/ganesh/SkSurfaceGanesh.h>
+#include <include/gpu/ganesh/gl/GrGLBackendSurface.h>
 
 #include <src/base/SkMathPriv.h>
 #include <src/gpu/ganesh/GrCaps.h>
@@ -116,10 +117,16 @@ void OpenGL::init()
     }
     fBackendContext = GrGLMakeNativeInterface();
     fContext = GrDirectContexts::MakeGL(fBackendContext, fGrContextOptions);
+    //std::unique_ptr<Recorder> recorder = fContext->makeRecorder();
     ReleaseDC(win->hwnd, dc);
 }
 
 void OpenGL::paint(HDC dc) {
     fContext->flushAndSubmit(surface.get());
     SwapBuffers(dc);
+}
+
+void OpenGL::textureFromImage(sk_sp<SkImage>& image)
+{
+    image = SkImages::TextureFromImage(fContext.get(), image.get());
 }

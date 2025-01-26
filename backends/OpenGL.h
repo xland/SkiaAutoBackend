@@ -12,6 +12,7 @@ public:
 	void resize() override;
 	sk_sp<SkSurface> getSurface() override;
 	void paint(HDC dc) override;
+	void textureFromImage(sk_sp<SkImage>& image) override;
 private:
 	void init();
 	void destroyContext();

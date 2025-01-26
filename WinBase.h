@@ -13,7 +13,7 @@ class WinBase
 public:
 	WinBase();
 	~WinBase();
-	void show();
+	virtual void show();
 public:
 	int x, y, w, h;
 	HWND hwnd;

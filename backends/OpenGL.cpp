@@ -82,15 +82,15 @@ void OpenGL::init()
     if (extensions.hasExtension(dc, "WGL_EXT_swap_control")) {
         extensions.swapInterval(1);
     }
-    if (wglMakeCurrent(dc, fHGLRC)) {
-        auto glInterface = GrGLMakeNativeInterface();
-        bool renderDocAttached = glInterface->hasExtension("GL_EXT_debug_tool");
-        glInterface.reset(nullptr);
-        if (renderDocAttached) {
-            wglDeleteContext(fHGLRC);
-            fHGLRC = SkCreateWGLContext(dc, fSampleCount, false, kGLPreferCoreProfile_SkWGLContextRequest);
-        }
-    }
+    //if (wglMakeCurrent(dc, fHGLRC)) {
+    //    auto glInterface = GrGLMakeNativeInterface();
+    //    bool renderDocAttached = glInterface->hasExtension("GL_EXT_debug_tool");
+    //    glInterface.reset(nullptr);
+    //    if (renderDocAttached) {
+    //        wglDeleteContext(fHGLRC);
+    //        fHGLRC = SkCreateWGLContext(dc, fSampleCount, false, kGLPreferCoreProfile_SkWGLContextRequest);
+    //    }
+    //}
     if (wglMakeCurrent(dc, fHGLRC)) {
         glClearStencil(0);
         glClearColor(0, 0, 0, 0);
@@ -116,6 +116,7 @@ void OpenGL::init()
     }
     fBackendContext = GrGLMakeNativeInterface();
     fContext = GrDirectContexts::MakeGL(fBackendContext, fGrContextOptions);
+    ReleaseDC(win->hwnd, dc);
 }
 
 void OpenGL::paint(HDC dc) {

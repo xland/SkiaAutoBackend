@@ -2,6 +2,9 @@
 #include <dxgi.h>
 #include <iostream>
 #include <wrl/client.h>
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#include "SkWGL.h"
 
 #include "Context.h"
 #include "OpenGL.h"
@@ -34,6 +37,8 @@ SkCanvas* Context::getCanvas()
 }
 
 bool Context::isGPUAvailable() {
+
+
     ComPtr<IDXGIFactory> dxgiFactory;
     HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(dxgiFactory.GetAddressOf()));
     return SUCCEEDED(hr);

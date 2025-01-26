@@ -49,14 +49,10 @@ LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_PAINT: {
         PAINTSTRUCT ps;
-        BeginPaint(hWnd, &ps);
-        SkRect rect = SkRect::MakeXYWH(win->w - 200, win->h - 200, 180, 180);
-        auto canvas = win->ctx->getCanvas();
-        SkPaint paint;
-        paint.setAntiAlias(true);
-        paint.setColor(0xff00ffff);
-        canvas->drawOval(rect, paint);
-        win->ctx->paint();
+        HDC dc = BeginPaint(hWnd, &ps);
+        win->paint(win->ctx->getCanvas());
+        win->ctx->paint(dc);
+        ReleaseDC(hWnd, dc);
         EndPaint(hWnd, &ps);
         return 0;
     }

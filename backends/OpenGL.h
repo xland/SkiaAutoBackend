@@ -11,7 +11,7 @@ public:
 	~OpenGL();
 	void resize() override;
 	sk_sp<SkSurface> getSurface() override;
-	void paint() override;
+	void paint(HDC dc) override;
 private:
 	void init();
 	void destroyContext();

@@ -19,7 +19,9 @@ public:
 	HWND hwnd;
 protected:
 	void createWindow();
-private:
-	static LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	virtual void paint(SkCanvas* canvas) = 0;
+protected:
 	std::unique_ptr<Context> ctx;
+private:
+	static LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);	
 };

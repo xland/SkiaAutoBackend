@@ -22,21 +22,23 @@
 
 OpenGL::OpenGL(WinBase* win) : Context(win), fBackendContext{nullptr}, fSurfaceProps(0, kRGB_H_SkPixelGeometry)
 {
+    backendType = "OpenGL";
 }
 
 OpenGL::~OpenGL()
 {
+    destroyContext();
 }
 
 void OpenGL::resize()
 {
-    this->destroyContext();
-    this->init();
+    destroyContext();
+    init();
 }
 
 sk_sp<SkSurface> OpenGL::getSurface()
 {
-    if (nullptr == fSurface) {
+    if (nullptr == surface) {
         GrGLint buffer;
         // 这一句非常重要
         // 原代码为：GR_GL_CALL(fBackendContext.get(), GetIntegerv(GR_GL_FRAMEBUFFER_BINDING, &buffer));
@@ -50,18 +52,18 @@ sk_sp<SkSurface> OpenGL::getSurface()
             fStencilBits,
             fbInfo);
 
-        fSurface = SkSurfaces::WrapBackendRenderTarget(fContext.get(),
+        surface = SkSurfaces::WrapBackendRenderTarget(fContext.get(),
             backendRT,
             kBottomLeft_GrSurfaceOrigin,
             kRGBA_8888_SkColorType,
             nullptr,
             &fSurfaceProps);
     }
-    return fSurface;
+    return surface;
 }
 
 void OpenGL::destroyContext() {
-    fSurface.reset(nullptr);
+    surface.reset(nullptr);
     if (fContext) {
         // in case we have outstanding refs to this (lua?)
         fContext->abandonContext();
@@ -79,6 +81,15 @@ void OpenGL::init()
     SkWGLExtensions extensions;
     if (extensions.hasExtension(dc, "WGL_EXT_swap_control")) {
         extensions.swapInterval(1);
+    }
+    if (wglMakeCurrent(dc, fHGLRC)) {
+        auto glInterface = GrGLMakeNativeInterface();
+        bool renderDocAttached = glInterface->hasExtension("GL_EXT_debug_tool");
+        glInterface.reset(nullptr);
+        if (renderDocAttached) {
+            wglDeleteContext(fHGLRC);
+            fHGLRC = SkCreateWGLContext(dc, fSampleCount, false, kGLPreferCoreProfile_SkWGLContextRequest);
+        }
     }
     if (wglMakeCurrent(dc, fHGLRC)) {
         glClearStencil(0);
@@ -107,9 +118,7 @@ void OpenGL::init()
     fContext = GrDirectContexts::MakeGL(fBackendContext, fGrContextOptions);
 }
 
-void OpenGL::paint() {
-    fContext->flushAndSubmit(fSurface.get());
-    HDC dc = GetDC(win->hwnd);
+void OpenGL::paint(HDC dc) {
+    fContext->flushAndSubmit(surface.get());
     SwapBuffers(dc);
-    ReleaseDC(win->hwnd, dc);
 }

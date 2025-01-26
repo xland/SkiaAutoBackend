@@ -13,3 +13,9 @@ std::unique_ptr<Context> Context::create(WinBase* win)
 {
 	return std::make_unique<OpenGL>(win);
 }
+
+SkCanvas* Context::getCanvas()
+{
+	auto surface = getSurface();
+	return surface->getCanvas();
+}

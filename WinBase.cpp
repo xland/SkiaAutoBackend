@@ -1,8 +1,5 @@
 #include "WinBase.h"
-//#include "gl/WindowContext.h"
-//#include "gl/WindowContextFactory_win.h"
 
-//std::unique_ptr<skwindow::WindowContext> fWindowContext;
 WinBase::WinBase()
 {
 }
@@ -42,7 +39,6 @@ void WinBase::createWindow()
     hwnd = CreateWindowEx(NULL, clsName, clsName, WS_OVERLAPPEDWINDOW,
         x, y, w, h, nullptr, nullptr, hinstance, nullptr);
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-    //fWindowContext = skwindow::MakeGLForWin(hwnd);
     ctx = Context::create(this);
 }
 
@@ -54,21 +50,13 @@ LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_PAINT: {
         PAINTSTRUCT ps;
         BeginPaint(hWnd, &ps);
-
-        //auto surface = fWindowContext->getBackbufferSurface();
-        auto surface = win->ctx->getSurface();
         SkRect rect = SkRect::MakeXYWH(win->w - 200, win->h - 200, 180, 180);
-        auto canvas = surface->getCanvas();
+        auto canvas = win->ctx->getCanvas();
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setColor(0xff00ffff);
         canvas->drawOval(rect, paint);
-        //if (auto dContext = fWindowContext->directContext()) {
-        //    dContext->flushAndSubmit(surface.get());
-        //}
-        //fWindowContext->swapBuffers();
         win->ctx->paint();
-
         EndPaint(hWnd, &ps);
         return 0;
     }
@@ -79,7 +67,6 @@ LRESULT WinBase::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE: {
         win->w = LOWORD(lParam);
         win->h = HIWORD(lParam);
-        //fWindowContext->resize(win->w, win->h);
         win->ctx->resize();
         return 0;
     }

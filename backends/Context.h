@@ -11,6 +11,7 @@ public:
 	static std::unique_ptr<Context> create(WinBase* win);
 	virtual void resize() = 0;
 	virtual sk_sp<SkSurface> getSurface() = 0;
+	SkCanvas* getCanvas();
 	virtual void paint() = 0;
 public:
 protected:

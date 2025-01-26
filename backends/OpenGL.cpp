@@ -112,5 +112,4 @@ void OpenGL::paint() {
     HDC dc = GetDC(win->hwnd);
     SwapBuffers(dc);
     ReleaseDC(win->hwnd, dc);
-
 }

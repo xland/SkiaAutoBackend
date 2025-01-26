@@ -18,7 +18,7 @@ private:
 private:
 	HGLRC fHGLRC{nullptr};
 	int fStencilBits = 0;
-	int fSampleCount = 6;
+	int fSampleCount = 3;
 	sk_sp<const GrGLInterface> fBackendContext;
 	sk_sp<GrDirectContext> fContext;
 	GrContextOptions fGrContextOptions;
